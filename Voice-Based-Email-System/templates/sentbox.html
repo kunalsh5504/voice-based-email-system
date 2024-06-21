@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+{% block body %}
+<style type="text/css">
+  body {
+    background-image: url("/static/images/student_dashboard.jpg")
+  }
+</style>
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title text-center">Sentbox Menu Options</h4>
+              </div>
+              <div class="card-body">
+                <table align="center" >
+                  <tr>
+                    <td>
+                      <input class="btn btn-primary btn-xl rounded-pill mt-5"
+                      role="button"
+                      style="width: 250px; background-color: black;" type="submit" 
+                      value="SEARCH" >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input class="btn btn-primary btn-xl rounded-pill mt-5" 
+                      role="button" 
+                      style="width: 250px; background-color: black;" type="submit"  
+                      value="DASHBOARD">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input class="btn btn-primary btn-xl rounded-pill mt-5"
+                      role="button"
+                      style="width: 250px; background-color: black;"  type="submit" 
+                      value="LOGOUT">
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="card-footer text-muted">
+              </div>
+            </div>
+          </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  function getAction() {
+    return new Promise(function(resolve, reject){
+      $.ajax({
+        url: '/sentbox',
+        method: 'POST',
+        success: function(response) {
+          const data = JSON.parse(response);
+          if(data.result == 'dashboard' || data.result == 'success'){
+				    location.replace("/");
+          }
+          else if(data.result == 'logout'){
+				    location.replace("logout");
+          }
+          resolve();
+        },
+        error: function(xhr, status, error) {
+            reject();
+        }
+      });
+    });
+  }
+  window.onload = async function(){
+    await getAction();
+  };
+</script>
+{% endblock %}

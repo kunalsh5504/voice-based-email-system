@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block body %}
+<style type="text/css">
+body {
+  background-image: url("/static/images/home.jpg")
+}  
+</style>
+          <div class="jumbotron">
+            <h1 style="text-align:center"></h1>
+          </div>
+          <div class="col-md-12">
+            <div class="card text-center">
+              <h1 style="text-align:center">Welcome to Voice Based Email System</h1>
+              {% if not session.std_logged_in %}
+                <div class="card-body" style="height: 200px;">
+                  <a href="/login_student" class="btn btn-primary">
+                    User Login
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  function getAction() {
+    $.ajax({
+      url: '/speak_index',
+      method: 'POST',
+      success: function(response) {
+        const parsedData = JSON.parse(response);
+        console.log("response: ", parsedData);
+        if(parsedData.say == "login") {
+          location.replace("login_student");
+        }
+      },
+      error: function(xhr, status, error) {
+          // Handle any errors
+      }
+    });
+  }
+  window.onload = function(){
+    getAction();
+  };
+</script>
+{% endblock %}

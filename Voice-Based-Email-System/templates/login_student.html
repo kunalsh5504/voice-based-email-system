@@ -1,0 +1,89 @@
+{% extends 'layout.html' %}
+{% block body %}
+<style type="text/css">
+  body {
+    background-image: url("/static/images/student_login.jpg")
+  }
+</style>
+          <div class="jumbotron">
+            <h1 style="text-align:center">Welcome to Voice Based Email System</h1>
+          </div>
+          <div class="col-md-12">
+            <div class="card text-center">
+              <div class="card-header">
+                <h5 class="card-title">User Login</h5>
+              </div>
+              <div class="card-body">
+                <form method='POST'>
+                  <div class="input-group mb-3">
+                    <input type="email" name='email' class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter Email" required>
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <input type="password" name='password' class="form-control" id="password" placeholder="Enter Password" required>
+                  </div>
+                  <button style="height: 50px;width: 250px;" type="submit" class="btn btn-primary">Log In</button>
+                </form>
+              </div>
+              <div class="card-footer text-muted">
+              </div>
+            </div>
+          </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  function getEmail() {
+    return new Promise(function(resolve, reject){
+      $.ajax({
+        url: '/login_student',
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        data: JSON.stringify({"param": "email"}),
+        success: function(response) {
+          const parsedData = JSON.parse(response);
+          $('#email').val(parsedData["email"]);
+          resolve();
+        },
+        error: function(xhr, status, error) {
+            reject();
+        }
+      });
+    });
+  }
+  function getPassword() {
+    return new Promise(function(resolve, reject){
+      $.ajax({
+        url: '/login_student',
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        data: JSON.stringify({"param": "password"}),
+        success: async function(response) {
+          const parsedData = JSON.parse(response);
+          $("#password").val(parsedData["password"]);
+          if(parsedData["say"] == "failure") {
+            $('#email').val("");
+            $("#password").val("");
+            await getEmail();
+            await getPassword();
+          } else {
+            location.replace("/");
+          }
+          resolve();
+        },
+        error: function(xhr, status, error) {
+          reject();
+        }
+      });
+    });
+  }
+  window.onload = async function(){
+    await getEmail();
+    await getPassword();
+  };
+</script>
+{% endblock %}

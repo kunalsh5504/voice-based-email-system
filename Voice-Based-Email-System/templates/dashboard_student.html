@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+{% block body %}
+<style type="text/css">
+  body {
+    background-image: url("/static/images/student_dashboard.jpg")
+  }
+</style>
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Welcome {{ session.uname }}</h4>
+              </div>
+              <div class="card-body">
+                <h5>User Dashboard</h5>
+                <br>
+                <div class="row">
+                  
+                </div>
+                <div class="text-center" style="height: 200px;">
+                </div>
+              </div>
+              <div class="card-footer text-muted">
+              </div>
+            </div>
+          </div>
+{% endblock %}
+
+{% block script %}
+<script>
+  function getAction() {
+    return new Promise(function(resolve, reject){
+      $.ajax({
+        url: '/student',
+        method: 'POST',
+        success: function(response) {
+          const data = JSON.parse(response);
+          if(data.result == 'compose'){
+				    location.replace("compose");
+          }
+          if(data.result == 'inbox'){
+				    location.replace("inbox");
+          }
+          if(data.result == 'sent'){
+				    location.replace("sentbox");
+          }
+          if(data.result == 'logout'){
+				    location.replace("logout");
+          }
+          resolve();
+        },
+        error: function(xhr, status, error) {
+            reject();
+        }
+      });
+    });
+  }
+  window.onload = async function(){
+    await getAction();
+  };
+</script>
+{% endblock %}
